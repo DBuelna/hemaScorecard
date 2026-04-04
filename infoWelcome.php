@@ -1,11 +1,10 @@
 <?php
 
-$pageName = "Welcome to HEMA Scorecard";
 
-include('includes/header.php');
+$pageName = "Welcome to HEMA Scorecard";
+include "includes/header.php";
 
 $eventList = getEventListByPublication('date');
-
 $eventsToShow['active'] = [];
 $eventsToShow['recent'] = [];
 $eventsToShow['published'] = [];
@@ -13,164 +12,122 @@ $eventsToShow['published'] = [];
 $isAnyEventActive = false;
 
 foreach ($eventList as $i => $event) {
-	$dateDiffStart = compareDates($event['eventStartDate']);
-	$dateDiffEnd = compareDates($event['eventEndDate']);
+    $dateDiffStart = compareDates($event['eventStartDate']);
+    $dateDiffEnd = compareDates($event['eventEndDate']);
 
-	if($dateDiffEnd > 14){ continue; }
-
-	$event['displayClass'] = "";
+    $event['displayClass'] = "";
 
     //Events that are scheduled for the current date
-	if($dateDiffStart > -2 && $dateDiffEnd < 2){
+    if ($dateDiffStart > -2 && $dateDiffEnd < 2){
+        if($event['eventStatus'] == 'active'){
+            $event['displayStatus'] = '<b>ACTIVE</b>';
+            $event['displayClass'] = "link-table-active";
+        } else {
+            $event['displayStatus'] = 'Unpublished';
+        }
 
-		
+        $eventsToShow['active'][] = $event;
+        $isAnyEventActive = true;
+    } elseif ($dateDiffEnd >= 2){
+        // Events that are scheduled for fulture dates
+        if ($event['eventStatus'] == 'active' || $event['eventStatus'] == 'complete') {
+            $event['displayStatus'] = '<b>Published</b>';
+        } else {
+            $event['displayStatus'] = 'Unpublished';
+        }
+        $eventsToShow['recent'][] = $event;
+    } else {
+        // Events that are less than 14 days old
+        if ($event['eventStatus'] == 'active'){
+            $event['displayStatus'] = '<b>Published</b>';
+        } else {
+            $event['displayStatus'] = 'Upcoming';
+        }
+        $eventsToShow['upcoming'][] = $event;
+    }
 
-		if($event['eventStatus'] == 'active'){
-			$event['displayStatus'] = '<b>ACTIVE</b>';
-			$event['displayClass'] = "link-table-active";
-		} else {
-			$event['displayStatus'] = 'Unpublished';
-		}
-
-		$eventsToShow['active'][] = $event;
-		$isAnyEventActive = true;
-
-	} elseif ($dateDiffEnd >= 2){
-
-		// Events that are scheduled for fulture dates
-
-		if($event['eventStatus'] == 'active' || $event['eventStatus'] == 'complete'){
-			$event['displayStatus'] = '<b>Published</b>';
-		} else {
-			$event['displayStatus'] = 'Unpublished';
-		}
-
-		$eventsToShow['recent'][] = $event;
-
-	} else {
-
-		// Events that are less than 14 days old
-
-		if($event['eventStatus'] == 'active'){
-			$event['displayStatus'] = '<b>Published</b>';
-		} else {
-			$event['displayStatus'] = 'Upcoming';
-		}
-
-		$eventsToShow['upcoming'][] = $event;
-
-	}
-
-
-	// Only make the Active tab the default if there are active events to show.
-	// Otherwise the Recent tab will be active on page load.
-	if($isAnyEventActive == true){
-		$activeClass = " is-active";
-		$recentClass = "";
-	} else {
-		$activeClass = "";
-		$recentClass = " is-active";
-	}
-
-
-}
-?>
-
-<div class='cell ' style='border-bottom:2px solid black'>
-	<div class='grid-x grid-margin-x'>
-
-	<div class='large-4 medium-5 cell align-self-middle'>
-	<img style='width: 400px;' src="includes/images/logo_rect.jpg">
-	</div>
-	<div class='large-8 medium-7 cell align-self-middle'>
-	<p>HEMA Scorecard is a <b>FREE</b> online tournament management software for Historical European Martial Arts tournaments. If you are interested in using HEMA Scorecard to hold a tournament of your own, <a href='infoWhy.php'> why not have a look at some of it's best features</a>? </p>
-</div></div>
-
-</div>
-
-<BR>
-<h3>Recent and Upcoming Events (<a href='infoSelect.php'>Full Event List</a>)</h3>
-
-
-<!-- Tabs ------------------------------------------------------------>
-
-<ul class="tabs" data-tabs id="recent-events-tabs">
-	<li class="tabs-title <?=$activeClass?>"><a data-tabs-target="panel-active">
-		Active
-	</a></li>
-
-	<li class="tabs-title"><a data-tabs-target="panel-upcoming">
-		Upcoming
-	</a></li>
-
-	<li class="tabs-title <?=$recentClass?>"><a data-tabs-target="panel-recent">
-		Recent
-	</a></li>
-
-</ul>
-
-
-<!-- Panels ------------------------------------------------------------>
-
-<div class="tabs-content" data-tabs-content="recent-events-tabs">
-
-	<div class="tabs-panel <?=$activeClass?>" id="panel-active">
-		<?=displayEventTabe($eventsToShow['active'])?>
-	</div>
-
-	<div class="tabs-panel" id="panel-upcoming">
-		<?=displayEventTabe($eventsToShow['upcoming'])?>
-	</div>
-
-	<div class="tabs-panel <?=$recentClass?>" id="panel-recent">
-		<?=displayEventTabe($eventsToShow['recent'])?>
-	</div>
-
-</div>
-
-
-<?
-include('includes/footer.php');
-
-// FUNCTIONS ///////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-/******************************************************************************/
-
-function displayEventTabe($eventList){
-?>
-
-<table class="display">
-
-	<thead>
-		<tr>
-			<th>Date
-				<?=tooltip("Y-M-D")?></th>
-			<th>Name</th>
-			<th>Location</th>
-			<th class='hide-for-small-only'>Status</th>
-		</tr>
-	</thead>
-
-	<tbody>
-
-		<?php foreach($eventList as $event): ?>
-			<tr onclick="changeEventJs(<?=$event['eventID']?>)" class='link-table <?=$event['displayClass']?>'>
-				<td><?=$event['eventStartDate']?></td>
-				<td><?=getEventName($event['eventID'])?></td>
-				<td><?=$event['countryName']?> (<?=$event['eventCity']?>, <?=$event['eventProvince']?>)</td>
-				<td class='hide-for-small-only'><?=$event['displayStatus']?></td>
-			</tr>
-
-		<?php endforeach ?>
-	</tbody>
-</table>
-
-<?php
+    // Only make the Active tab the default if there are active events to show.
+    // Otherwise the Recent tab will be active on page load.
+    if ($isAnyEventActive == true){
+        $activeClass = " is-active";
+        $recentClass = "";
+    } else {
+        $activeClass = "";
+        $recentClass = " is-active";
+    }
 }
 
+function displayEventTabe($eventList)
+{
+    ?>
+    <table class="display">
+        <thead>
+            <tr>
+                <th>Date
+                    <?=tooltip("Y-M-D")?></th>
+                <th>Name</th>
+                <th>Location</th>
+                <th class='hide-for-small-only'>Status</th>
+            </tr>
+        </thead>
 
-/******************************************************************************/
+        <tbody>
+            <?php foreach($eventList as $event): ?>
+                <tr onclick="changeEventJs(<?=$event['eventID']?>)" class='link-table <?=$event['displayClass']?>'>
+                    <td><?=$event['eventStartDate']?></td>
+                    <td><?=getEventName($event['eventID'])?></td>
+                    <td><?=$event['countryName']?> (<?=$event['eventCity']?>, <?=$event['eventProvince']?>)</td>
+                    <td class='hide-for-small-only'><?=$event['displayStatus']?></td>
+                </tr>
 
-// END OF DOCUMENT /////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+            <?php endforeach ?>
+        </tbody>
+    </table><?php
+}
+?>
+<div class="container">
+    <div class='cell ' style='border-bottom:2px solid black'>
+        <div class='grid-x grid-margin-x'>
+            <div class='large-4 medium-5 cell align-self-middle'>
+                <img style='width: 400px;' src="includes/images/logo_rect.jpg">
+            </div>
+            <div class='large-8 medium-7 cell align-self-middle'>
+                <p>HEMA Scorecard is a <b>FREE</b> online tournament management software for Historical European Martial Arts tournaments. If you are interested in using HEMA Scorecard to hold a tournament of your own, <a href='infoWhy.php'> why not have a look at some of it's best features</a>? </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="border: 1px solid black;">
+        <h3>Recent and Upcoming Events (<a href='infoSelect.php'>Full Event List</a>)</h3>
+
+        <ul class="tabs" data-tabs id="recent-events-tabs">
+            <li class="tabs-title <?=$activeClass?>"><a data-tabs-target="panel-active">
+                Active
+            </a></li>
+
+            <li class="tabs-title"><a data-tabs-target="panel-upcoming">
+                Upcoming
+            </a></li>
+
+            <li class="tabs-title <?=$recentClass?>"><a data-tabs-target="panel-recent">
+                Recent
+            </a></li>
+        </ul>
+
+        <div class="tabs-content" data-tabs-content="recent-events-tabs">
+            <div class="tabs-panel <?=$activeClass?>" id="panel-active">
+                <?=displayEventTabe($eventsToShow['active'])?>
+            </div>
+            <div class="tabs-panel" id="panel-upcoming">
+                <?=displayEventTabe($eventsToShow['upcoming'])?>
+            </div>
+            <div class="tabs-panel <?=$recentClass?>" id="panel-recent">
+                <?=displayEventTabe($eventsToShow['recent'])?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <?include('includes/footer.php')?>    
+</footer>
