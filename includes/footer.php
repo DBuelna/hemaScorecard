@@ -17,47 +17,85 @@
 
 	<?=displaySponsors()?>
 
-	<div class='grid-x grid-margin-x text-right align-right'  style='border-top: 1px solid black; margin-top: 20px;'>
+	<style>
+		.site-footer {
+			border-top: 1px solid black;
+			margin-top: 20px;
+			padding: 18px 0 8px;
+		}
 
-		<div class='grid-x grid-margin-x align-right'>
+		.site-footer__inner {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 16px 18px;
+			align-items: center;
+			justify-content: center;
+		}
 
-			<div class='shrink cell'>
-				<div class='grid-x grid-margin-x align-right'>
-					<div class='shrink cell'>
-						<a href='index.php'>HEMA Scorecard</a><BR>
-						Developed by Sean Franklin <BR>
-						A <a href='http://www.swordstem.com/'>SwordSTEM</a> project<BR>
+		.site-footer__group {
+			display: flex;
+			flex: 1 1 260px;
+			gap: 14px;
+			align-items: center;
+			justify-content: center;
+			min-width: 0;
+		}
 
-						<a href='http://www.seanfranklin.ca/talenttree' class='easter-egg'>you found me</a>
-					</div>
-					<div class='shrink cell'>
-						<a href='http://www.swordstem.com/'>
-							<img src='includes/images/SwordSTEM_logo.png'>
-						</a>
-					</div>
+		.site-footer__text {
+			line-height: 1.45;
+		}
+
+		.site-footer__logo {
+			max-width: 84px;
+			height: auto;
+			display: block;
+		}
+
+		.site-footer a {
+			overflow-wrap: anywhere;
+		}
+
+		@media (max-width: 640px) {
+			.site-footer {
+				padding-top: 16px;
+			}
+
+			.site-footer__inner {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 18px;
+			}
+
+			.site-footer__group {
+				justify-content: center;
+				flex-basis: auto;
+			}
+		}
+	</style>
+
+	<div class='site-footer'>
+		<div class='site-footer__inner'>
+			<div class='site-footer__group'>
+				<div class='site-footer__text'>
+					<a href='index.php'>HEMA Scorecard</a><br>
+					Developed by Sean Franklin<br>
+					A <a href='http://www.swordstem.com/'>SwordSTEM</a> project<br>
+					<a href='http://www.seanfranklin.ca/talenttree' class='easter-egg'>you found me</a>
 				</div>
+				<a href='http://www.swordstem.com/'>
+					<img class='site-footer__logo' src='includes/images/SwordSTEM_logo.png' alt='SwordSTEM logo'>
+				</a>
 			</div>
 
-			<div class='shrink cell'>
-				<div class='grid-x grid-margin-x align-right'>
-					<div class='shrink cell'>
-						Supported by the<BR>
-						<a href='https://www.hemaalliance.com/'>HEMA Alliance</a>
-					</div>
-					<div class='shrink cell'>
-						<a href='https://www.hemaalliance.com/'>
-							<img src='includes/images/hemaa_logo_s.png'>
-						</a>
-					</div>
+			<div class='site-footer__group'>
+				<div class='site-footer__text'>
+					Supported by the<br>
+					<a href='https://www.hemaalliance.com/'>HEMA Alliance</a>
 				</div>
+				<a href='https://www.hemaalliance.com/'>
+					<img class='site-footer__logo' src='includes/images/hemaa_logo_s.png' alt='HEMA Alliance logo'>
+				</a>
 			</div>
-
-
-
-			<div class='shrink cell'>
-
-			</div>
-
 		</div>
 	</div>
 	<?php endif ?>
