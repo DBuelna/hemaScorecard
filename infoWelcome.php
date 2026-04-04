@@ -1,95 +1,79 @@
 <?php
-/*******************************************************************************
-	Event Selection
-
-	Select which event to use
-	Login:
-		- SUPER ADMIN can see hidden events
-
-*******************************************************************************/
-
-// INITIALIZATION //////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 $pageName = "Welcome to HEMA Scorecard";
 
 include('includes/header.php');
 
-	$eventList = getEventListByPublication('date');
+$eventList = getEventListByPublication('date');
 
-	$eventsToShow['active'] = [];
-	$eventsToShow['recent'] = [];
-	$eventsToShow['published'] = [];
+$eventsToShow['active'] = [];
+$eventsToShow['recent'] = [];
+$eventsToShow['published'] = [];
 
-	$isAnyEventActive = false;
+$isAnyEventActive = false;
 
-	foreach($eventList as $i => $event){
+foreach ($eventList as $i => $event) {
+	$dateDiffStart = compareDates($event['eventStartDate']);
+	$dateDiffEnd = compareDates($event['eventEndDate']);
 
-		$dateDiffStart = compareDates($event['eventStartDate']);
-		$dateDiffEnd = compareDates($event['eventEndDate']);
+	if($dateDiffEnd > 14){ continue; }
 
-		if($dateDiffEnd > 14){ continue; }
+	$event['displayClass'] = "";
 
-		$event['displayClass'] = "";
+    //Events that are scheduled for the current date
+	if($dateDiffStart > -2 && $dateDiffEnd < 2){
 
+		
 
-		if($dateDiffStart > -2 && $dateDiffEnd < 2){
-
-			// Events that are scheduled for the current date
-
-			if($event['eventStatus'] == 'active'){
-				$event['displayStatus'] = '<b>ACTIVE</b>';
-				$event['displayClass'] = "link-table-active";
-			} else {
-				$event['displayStatus'] = 'Unpublished';
-			}
-
-			$eventsToShow['active'][] = $event;
-			$isAnyEventActive = true;
-
-		} elseif ($dateDiffEnd >= 2){
-
-			// Events that are scheduled for fulture dates
-
-			if($event['eventStatus'] == 'active' || $event['eventStatus'] == 'complete'){
-				$event['displayStatus'] = '<b>Published</b>';
-			} else {
-				$event['displayStatus'] = 'Unpublished';
-			}
-
-			$eventsToShow['recent'][] = $event;
-
+		if($event['eventStatus'] == 'active'){
+			$event['displayStatus'] = '<b>ACTIVE</b>';
+			$event['displayClass'] = "link-table-active";
 		} else {
-
-			// Events that are less than 14 days old
-
-			if($event['eventStatus'] == 'active'){
-				$event['displayStatus'] = '<b>Published</b>';
-			} else {
-				$event['displayStatus'] = 'Upcoming';
-			}
-
-			$eventsToShow['upcoming'][] = $event;
-
+			$event['displayStatus'] = 'Unpublished';
 		}
 
+		$eventsToShow['active'][] = $event;
+		$isAnyEventActive = true;
 
-		// Only make the Active tab the default if there are active events to show.
-		// Otherwise the Recent tab will be active on page load.
-		if($isAnyEventActive == true){
-			$activeClass = " is-active";
-			$recentClass = "";
+	} elseif ($dateDiffEnd >= 2){
+
+		// Events that are scheduled for fulture dates
+
+		if($event['eventStatus'] == 'active' || $event['eventStatus'] == 'complete'){
+			$event['displayStatus'] = '<b>Published</b>';
 		} else {
-			$activeClass = "";
-			$recentClass = " is-active";
+			$event['displayStatus'] = 'Unpublished';
 		}
 
+		$eventsToShow['recent'][] = $event;
+
+	} else {
+
+		// Events that are less than 14 days old
+
+		if($event['eventStatus'] == 'active'){
+			$event['displayStatus'] = '<b>Published</b>';
+		} else {
+			$event['displayStatus'] = 'Upcoming';
+		}
+
+		$eventsToShow['upcoming'][] = $event;
 
 	}
 
 
-// PAGE DISPLAY ////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+	// Only make the Active tab the default if there are active events to show.
+	// Otherwise the Recent tab will be active on page load.
+	if($isAnyEventActive == true){
+		$activeClass = " is-active";
+		$recentClass = "";
+	} else {
+		$activeClass = "";
+		$recentClass = " is-active";
+	}
+
+
+}
 ?>
 
 <div class='cell ' style='border-bottom:2px solid black'>

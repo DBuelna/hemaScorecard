@@ -1,31 +1,12 @@
 <?php
-/*******************************************************************************
-	Page Header
-
-	Links to stylesheets and config as well as header content
-	and navigation links
-	LOGIN:
-		- Menu items change depending on login level
-		- Login button becomes 'Log Out' when loged in
-
-*******************************************************************************/
-
 include_once('includes/config.php');
 
 $vJ = '?=1.9.11'; // Javascript Version
 $vC = '?=1.4.0'; // CSS Version
 
-if(    ALLOW['EVENT_MANAGEMENT'] == true
-	|| ALLOW['VIEW_SETTINGS'] == true
-	|| ALLOW['STATS_EVENT'] == true){
 
-	$adminStatsDisplay = true;
-} else {
-	$adminStatsDisplay = false;
-}
-
+$adminStatsDisplay = (boolval(ALLOW['EVENT_MANAGEMENT']) || boolval(ALLOW['VIEW_SETTINGS']) || boolval(ALLOW['STATS_EVENT']));
 ?>
-
 <!doctype html>
 <html class="no-js" lang="en" dir="ltr">
 
