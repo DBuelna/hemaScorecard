@@ -8,8 +8,8 @@ services:
       - .:/hemaScorecard
 
     command: >
-      sh -c "docker-php-ext-install mysqli &&
-             docker-php-ext-enable mysqli &&
+      sh -c "docker-php-ext-install mysqli pdo_mysql &&
+             docker-php-ext-enable mysqli pdo_mysql &&
              pecl install xdebug-3.1.5 ||
              docker-php-ext-enable xdebug &&
              php -S 0.0.0.0:8000 -t /hemaScorecard"
@@ -20,6 +20,8 @@ services:
       - db
   db:
     image: "mysql:5.7.33"
+    ports:
+      - "3306:3306"
 
     environment:
       MYSQL_DATABASE: ScorecardV5

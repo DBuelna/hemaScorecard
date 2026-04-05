@@ -1,17 +1,13 @@
 <?php
-
-
 $pageName = "Welcome to HEMA Scorecard";
 include "includes/header.php";
 
-$eventList = getEventListByPublication('date');
+$eventList = [];
 $eventsToShow['active'] = [];
 $eventsToShow['recent'] = [];
 $eventsToShow['published'] = [];
-
 $isAnyEventActive = false;
-
-foreach ($eventList as $i => $event) {
+foreach (getEventListByPublication('date') as $i => $event) {
     $dateDiffStart = compareDates($event['eventStartDate']);
     $dateDiffEnd = compareDates($event['eventEndDate']);
 
@@ -19,7 +15,7 @@ foreach ($eventList as $i => $event) {
 
     //Events that are scheduled for the current date
     if ($dateDiffStart > -2 && $dateDiffEnd < 2){
-        if($event['eventStatus'] == 'active'){
+        if ($event['eventStatus'] == 'active'){
             $event['displayStatus'] = '<b>ACTIVE</b>';
             $event['displayClass'] = "link-table-active";
         } else {
@@ -57,6 +53,7 @@ foreach ($eventList as $i => $event) {
     }
 }
 
+
 function displayEventTabe($eventList)
 {
     ?>
@@ -85,6 +82,7 @@ function displayEventTabe($eventList)
     </table><?php
 }
 ?>
+
 <div class="container">
     <div class='cell ' style='border-bottom:2px solid black'>
         <div class='grid-x grid-margin-x'>
@@ -127,6 +125,7 @@ function displayEventTabe($eventList)
         </div>
     </div>
 </div>
+
 
 <footer>
     <?include('includes/footer.php')?>    
