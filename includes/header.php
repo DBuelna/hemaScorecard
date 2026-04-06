@@ -4,14 +4,11 @@ require_once('includes/header_functions.php');
 
 $vJ = '?=1.9.11'; // Javascript Version
 $vC = '?=1.4.0'; // CSS Version
-
 $adminStatsDisplay = (boolval(ALLOW['EVENT_MANAGEMENT']) || boolval(ALLOW['VIEW_SETTINGS']) || boolval(ALLOW['STATS_EVENT']));
 ?>
 <!doctype html>
 <html class="no-js" lang="en" dir="ltr">
-
-<?php include('includes/head.php'); ?>
-
+    <?php include('includes/head.php'); ?>
 <body>
 
 <?php 

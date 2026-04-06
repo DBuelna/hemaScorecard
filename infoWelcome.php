@@ -1,6 +1,12 @@
 <?php
 $pageName = "Welcome to HEMA Scorecard";
-include "includes/header.php";
+
+include_once('includes/config.php');
+require_once('includes/header_functions.php');
+
+$vJ = '?=1.9.11'; // Javascript Version
+$vC = '?=1.4.0'; // CSS Version
+$adminStatsDisplay = (boolval(ALLOW['EVENT_MANAGEMENT']) || boolval(ALLOW['VIEW_SETTINGS']) || boolval(ALLOW['STATS_EVENT']));
 
 $eventList = [];
 $eventsToShow['active'] = [];
@@ -53,7 +59,6 @@ foreach (getEventListByPublication('date') as $i => $event) {
     }
 }
 
-
 function displayEventTabe($eventList)
 {
     ?>
@@ -83,50 +88,70 @@ function displayEventTabe($eventList)
 }
 ?>
 
-<div class="container">
-    <div class='cell ' style='border-bottom:2px solid black'>
-        <div class='grid-x grid-margin-x'>
-            <div class='large-4 medium-5 cell align-self-middle'>
-                <img style='width: 400px;' src="includes/images/logo_rect.jpg">
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+    <?php include('includes/head.php'); ?>
+<body>
+    <div id='page-wrapper' class='grid-container'>
+        <?php
+        if (isset($lockedTournamentWarning)){
+            tournamentLockedAlert($lockedTournamentWarning);
+        }
+
+        displayPageAlerts();
+        displayEventAnnouncements();
+        ?>
+    </div>
+
+
+    <?php
+    include('includes/navbar.php');
+    include('includes/lower_nav.php');
+    include('includes/page_title.php');
+    ?>
+    <div class="container">
+        <div class='cell ' style='border-bottom:2px solid black'>
+            <div class='grid-x grid-margin-x'>
+                <div class='large-4 medium-5 cell align-self-middle'>
+                    <img style='width: 400px;' src="includes/images/logo_rect.jpg">
+                </div>
+                <div class='large-8 medium-7 cell align-self-middle'>
+                    <p>HEMA Scorecard is a <b>FREE</b> online tournament management software for Historical European Martial Arts tournaments. If you are interested in using HEMA Scorecard to hold a tournament of your own, <a href='/features.php'> why not have a look at some of it's best features</a>? </p>
+                </div>
             </div>
-            <div class='large-8 medium-7 cell align-self-middle'>
-                <p>HEMA Scorecard is a <b>FREE</b> online tournament management software for Historical European Martial Arts tournaments. If you are interested in using HEMA Scorecard to hold a tournament of your own, <a href='infoWhy.php'> why not have a look at some of it's best features</a>? </p>
+        </div>
+
+        <div style="border: 1px solid black;">
+            <h3>Recent and Upcoming Events (<a href='infoSelect.php'>Full Event List</a>)</h3>
+
+            <ul class="tabs" data-tabs id="recent-events-tabs">
+                <li class="tabs-title <?=$activeClass?>"><a data-tabs-target="panel-active">
+                    Active
+                </a></li>
+
+                <li class="tabs-title"><a data-tabs-target="panel-upcoming">
+                    Upcoming
+                </a></li>
+
+                <li class="tabs-title <?=$recentClass?>"><a data-tabs-target="panel-recent">
+                    Recent
+                </a></li>
+            </ul>
+
+            <div class="tabs-content" data-tabs-content="recent-events-tabs">
+                <div class="tabs-panel <?=$activeClass?>" id="panel-active">
+                    <?=displayEventTabe($eventsToShow['active'])?>
+                </div>
+                <div class="tabs-panel" id="panel-upcoming">
+                    <?=displayEventTabe($eventsToShow['upcoming'])?>
+                </div>
+                <div class="tabs-panel <?=$recentClass?>" id="panel-recent">
+                    <?=displayEventTabe($eventsToShow['recent'])?>
+                </div>
             </div>
         </div>
     </div>
 
-    <div style="border: 1px solid black;">
-        <h3>Recent and Upcoming Events (<a href='infoSelect.php'>Full Event List</a>)</h3>
-
-        <ul class="tabs" data-tabs id="recent-events-tabs">
-            <li class="tabs-title <?=$activeClass?>"><a data-tabs-target="panel-active">
-                Active
-            </a></li>
-
-            <li class="tabs-title"><a data-tabs-target="panel-upcoming">
-                Upcoming
-            </a></li>
-
-            <li class="tabs-title <?=$recentClass?>"><a data-tabs-target="panel-recent">
-                Recent
-            </a></li>
-        </ul>
-
-        <div class="tabs-content" data-tabs-content="recent-events-tabs">
-            <div class="tabs-panel <?=$activeClass?>" id="panel-active">
-                <?=displayEventTabe($eventsToShow['active'])?>
-            </div>
-            <div class="tabs-panel" id="panel-upcoming">
-                <?=displayEventTabe($eventsToShow['upcoming'])?>
-            </div>
-            <div class="tabs-panel <?=$recentClass?>" id="panel-recent">
-                <?=displayEventTabe($eventsToShow['recent'])?>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<footer>
     <?include('includes/footer.php')?>    
-</footer>
+</body>
+</html>

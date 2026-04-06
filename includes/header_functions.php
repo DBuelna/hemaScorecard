@@ -501,6 +501,10 @@ function tournamentListForHeader()
     }
 
     $tournamentsToDisplay = sortTournamentAndDivisions($_SESSION['eventID']);
+
+    if (!boolval($tournamentsToDisplay) && !boolval($currentTournamenID)) {
+        return NULL;
+    }
     ?>
 
     <li>

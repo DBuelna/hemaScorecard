@@ -44,7 +44,6 @@ function readOption($type, $id, $optionEnum)
     return ( (int)mysqlQuery($sql, SINGLE, 'optionValue') );
 }
 
-
 require_once "{$_SERVER['DOCUMENT_ROOT']}/includes/hemaRatings.php";
 require_once "{$_SERVER['DOCUMENT_ROOT']}/includes/csv.php";
 require_once "{$_SERVER['DOCUMENT_ROOT']}/includes/tournament.php";
