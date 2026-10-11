@@ -1,10 +1,3 @@
 <?php
-/*******************************************************************************
-	Index
-
-	Redirects from the base URL to the Event Selection page
-
-*******************************************************************************/
-
-include "infoWelcome.php";
-exit;
+// Serve the welcome page at the root URL.
+require __DIR__ . '/infoWelcome.php';

@@ -660,3 +660,60 @@ function DisplayServerVersion()
         <i><?=$text?></i>
     </div><?php
 }
+
+function displaySponsors()
+{
+    $eventSponsors = getEventSponsors($_SESSION['eventID']);
+    $imageSize = 2; // 200 / 100% = 2 per percent
+
+    if (sizeof($eventSponsors) == 0) {
+        return;
+    }
+
+    $pageName = basename($_SERVER['PHP_SELF']);
+    if (ALLOW['EVENT_SCOREKEEP'] == true && ($pageName == 'scoreMatch.php' || $pageName == 'scorePiece.php' )) {
+        $hideForSmall = 'hide-for-small-only';
+    } else {
+        $hideForSmall = '';
+    }
+    ?>
+    <div class="large-12 cell align-top <?=$hideForSmall?>" style='border-top: 1px solid black; margin-top: 20px;'>
+        <div class='grid-x grid-margin-x align-center align-top' id='sponsor-large'>
+            <?php foreach($eventSponsors as $sponsor): ?>
+            <div class='shrink cell'>
+                <img class='align-self-top' src="<?=$sponsor['imagePathAndFile']?>" style='display: inline-block'
+                    width="<?=($sponsor['eventSponsorPercent'] * $imageSize)?>" title="<?=$sponsor['sponsorName']?>">
+            </div>
+            <?php endforeach ?>
+        </div>
+    </div><?php
+}
+
+function displayEventTabe($eventList)
+{
+    ?>
+    <table class="display">
+        <thead>
+            <tr>
+                <th>Date
+                    <?=tooltip("Y-M-D")?></th>
+                <th>Name</th>
+                <th>Location</th>
+                <th class='hide-for-small-only'>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <?php foreach($eventList as $event): ?>
+                <tr onclick="changeEventJs(<?=$event['eventID']?>)" class='link-table <?=$event['displayClass']?>'>
+                    <td><?=$event['eventStartDate']?></td>
+                    <td><?=getEventName($event['eventID'])?></td>
+                    <td><?=$event['countryName']?> (<?=$event['eventCity']?>, <?=$event['eventProvince']?>)</td>
+                    <td class='hide-for-small-only'><?=$event['displayStatus']?></td>
+                </tr>
+
+            <?php endforeach ?>
+        </tbody>
+    </table><?php
+}
