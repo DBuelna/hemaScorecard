@@ -1,22 +1,5 @@
 <?php
-/*******************************************************************************
-	Footer
-
-	Page footer and javascript declarations
-
-*******************************************************************************/
-
-	displayPageAlerts();
-
-?>
-
-	</div id='a'><!-- End Page Wrapper -->
-
-<?php include __DIR__ . '/partials/footer.php'; ?>
-<?php include __DIR__ . '/partials/scripts.php'; ?>
-
-</body>
-
-
-</html>
-
+// Complete the legacy content capture; no HTML containers cross file boundaries.
+displayPageAlerts();
+$contentHtml = ob_get_clean();
+include __DIR__ . '/layout.php';

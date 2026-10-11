@@ -1,49 +1,23 @@
 <?php
-/*******************************************************************************
-    Page Header
-
-    Links to stylesheets and config as well as header content
-    and navigation links
-    LOGIN:
-        - Menu items change depending on login level
-        - Login button becomes 'Log Out' when loged in
-
-*******************************************************************************/
-
-include_once('includes/config.php');
-
+// Compatibility adapter for pages that still include header.php/footer.php.
+// Request handling runs before output; layout.php owns the complete document.
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/pageFunctions.php';
 
-$vJ = '?=1.9.11'; // Javascript Version
-$vC = '?=1.4.0'; // CSS Version
+$vJ = '?=1.9.11';
+$vC = '?=1.4.0';
+$adminStatsDisplay = ALLOW['EVENT_MANAGEMENT'] || ALLOW['VIEW_SETTINGS'] || ALLOW['STATS_EVENT'];
 
-if(    ALLOW['EVENT_MANAGEMENT'] == true
-    || ALLOW['VIEW_SETTINGS'] == true
-    || ALLOW['STATS_EVENT'] == true){
-
-    $adminStatsDisplay = true;
-} else {
-    $adminStatsDisplay = false;
+// Capture the opening components now to preserve their session/alert timing.
+$layoutOpening = [];
+foreach (['head', 'navbar', 'page-title', 'tournament-nav'] as $partial) {
+    ob_start();
+    include __DIR__ . '/partials/' . $partial . '.php';
+    $layoutOpening[$partial] = ob_get_clean();
 }
-?>
+ob_start();
+include __DIR__ . '/pageAlerts.php';
+$layoutOpening['alerts'] = ob_get_clean();
 
-<!doctype html>
-<html class="no-js" lang="en" dir="ltr">
-
-<head>
-<?php include __DIR__ . '/partials/head.php'; ?>
-</head>
-
-<body>
-
-<?php include __DIR__ . '/partials/navbar.php'; ?>
-
-<?php include __DIR__ . '/partials/page-title.php'; ?>
-
-<!-- START Lower Navigation --------------------------------------->
-<div id='page-wrapper' class='grid-container'>
-<?php include __DIR__ . '/partials/tournament-nav.php'; ?>
-<!-- END Lower Navigation ----------------------------------------->
-
-<!-- START Page Alerts -------------------------------------------->
-<?php include __DIR__ . '/pageAlerts.php'; ?>
+// The matching footer hands this page's content to the complete layout.
+ob_start();

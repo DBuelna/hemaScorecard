@@ -75,14 +75,13 @@ foreach ($eventList as $i => $event) {
 
 // Only make the Active tab the default if there are active events to show.
 // Otherwise the Recent tab will be active on page load.
-if($isAnyEventActive == true){
+if ($isAnyEventActive == true) {
     $activeClass = " is-active";
     $recentClass = "";
 } else {
     $activeClass = "";
     $recentClass = " is-active";
 }
-
 
 $contentTemplate = __DIR__ . '/includes/views/welcome.php';
 include __DIR__ . '/includes/layout.php';
